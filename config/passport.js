@@ -25,7 +25,7 @@ passport.use(new LocalStrategy(
   }
 ))
 
-// serialize and deserialize user
+// session: serialize and deserialize user
 passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
