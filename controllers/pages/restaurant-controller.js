@@ -1,4 +1,3 @@
-const { Restaurant, Category, Comment, User } = require('../../models')
 const restaurantServices = require('../../services/restaurant-services')
 
 const restaurantController = {
@@ -6,69 +5,13 @@ const restaurantController = {
     restaurantServices.getRestaurants(req, (err, data) => err ? next(err) : res.render('restaurants', data))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: [Category, // 拿出關聯的 Category model
-        { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' },
-        { model: User, as: 'LikedUsers' }
-      ]
-      // nest: true,
-      // raw: true
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.increment('viewCounts', { by: 1 })
-      })
-      .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
-        res.render('restaurant', {
-          restaurant: restaurant.toJSON(),
-          isFavorited,
-          isLiked
-        })
-      }
-      )
-      .catch(err => next(err))
+    restaurantServices.getRestaurant(req, (err, data) => err ? next(err) : res.render('restaurant', data))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', {
-          restaurant
-        })
-      })
-      .catch(err => next(err))
+    restaurantServices.getDashboard(req, (err, data) => err ? next(err) : res.render('dashboard', data))
   },
   getFeeds: (req, res, next) => {
-    return Promise.all([
-      Restaurant.findAll({
-        limit: 10,
-        order: [['createdAt', 'DESC']],
-        include: [Category],
-        raw: true,
-        nest: true
-      }),
-      Comment.findAll({
-        limit: 10,
-        order: [['createdAt', 'DESC']],
-        include: [User, Restaurant],
-        raw: true,
-        nest: true
-      })
-    ])
-      .then(([restaurants, comments]) => {
-        res.render('feeds', {
-          restaurants,
-          comments
-        })
-      })
-      .catch(err => next(err))
+    restaurantServices.getFeeds(req, (err, data) => err ? next(err) : res.render('feeds', data))
   }
 }
 module.exports = restaurantController
