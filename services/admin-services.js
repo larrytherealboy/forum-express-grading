@@ -37,7 +37,7 @@ const adminController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
-        cb(null, restaurant)
+        cb(null, { restaurant })
       })
       .catch(err => cb(err))
   },
