@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
+const Sequelize = require('sequelize')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -25,7 +26,14 @@ const userController = {
   getUser: (req, cb) => {
     const userId = Number(req.params.id) || ''
     return Promise.all([
-      User.findByPk((req.params.id), { nest: true, raw: true }),
+      User.findByPk((req.params.id), {
+        include: [
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' },
+          { model: Restaurant, as: 'FavoritedRestaurants' }
+        ],
+        nest: true
+      }),
       Comment.findAndCountAll({
         include: [
           Restaurant
@@ -40,7 +48,7 @@ const userController = {
       .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
         cb(null, {
-          user,
+          user: user.toJSON(),
           accountUser: req.user,
           comments
         })

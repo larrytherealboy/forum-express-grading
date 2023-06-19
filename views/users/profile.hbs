@@ -10,7 +10,6 @@
         <li>{{user.email}}</li>
         <li>{{comments.count}}已評論餐廳</li>
       </ul>
-
     </div>
     {{#ifCond accountUser.id user.id}}
     <a class="btn btn-primary" href="/users/{{user.id}}/edit" role="button">edit</a>
@@ -18,8 +17,24 @@
   </div>
   <hr>
 </div>
-<div class="col">
-  <div class="card">
+
+<div class="row">
+
+  <div class="col card">
+    <div class="card-header">
+      {{user.Followings.length}} followings (追蹤者)
+    </div>
+    <div class="card-body">
+      {{#each user.Followings}}
+      <a href="/users/{{this.id}}">
+        <img class="img-responsive center-block mb-5" src="{{this.image}}"
+        style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="col card">
     <div class="card-header">
       {{comments.count}}已評論餐廳
     </div>
@@ -27,9 +42,44 @@
       {{#each comments.rows}}
       <a href="/restaurants/{{this.Restaurant.id}}">
         <img class="img-responsive center-block mb-5" src="{{this.Restaurant.image}}"
-        style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-        </a>
+          style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+      {{/each}}
+    </div>
+
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="col card">
+    <div class="card-header">
+      {{user.Followers.length}} followers (追蹤者)
+    </div>
+    <div class="card-body">
+      {{#each user.Followers}}
+      <a href="/restaurants/{{this.id}}">
+        <img class="img-responsive center-block mb-5" src="{{this.image}}"
+          style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
       {{/each}}
     </div>
   </div>
+
+  <div class="col card">
+    <div class="card-header">
+      {{user.FavoritedRestaurants.length}} 收藏的餐廳
+    </div>
+    <div class="card-body">
+      {{#each user.FavoritedRestaurants}}
+      <a href="/restaurants/{{this.id}}">
+        <img class="img-responsive center-block mb-5" src="{{this.image}}"
+          style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+      {{/each}}
+    </div>
+
+  </div>
+
 </div>
