@@ -41,6 +41,12 @@ app.use((req, res, next) => {
 app.use('/api', apis)
 app.use(pages)
 
+// app.get('', (req, res) => {
+//   res.send('Hello world!')
+// })
+app.get('/favicon.ico', (req, res) => {
+  res.sendStatus(204)
+})
 app.listen(port, () => {
   console.info(`Example app listening on port ${port}!`)
 })
