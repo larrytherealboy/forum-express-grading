@@ -65,6 +65,23 @@ const restaurantController = {
       )
       .catch(err => cb(err))
   },
+  getTopRestaurants: (req, cb) => {
+    return Restaurant.findAll({
+      include: [Category,
+        { model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const result = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          favoriteCount: restaurant.FavoritedUsers.length,
+          isFavorited: req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+        }))
+          .sort((a, b) => b.favoriteCount - a.favoriteCount)
+          .slice(0, 10)
+        cb(null, { restaurants: result })
+      })
+      .catch(err => cb(err))
+  },
   getDashboard: (req, cb) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category, // 拿出關聯的 Category model
