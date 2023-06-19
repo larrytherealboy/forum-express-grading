@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const Sequelize = require('sequelize')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
